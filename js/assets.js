@@ -39,7 +39,7 @@
 
                 async init() {
                     const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
-                    if (!loggedIn) window.location.href = 'login.html';
+                    if (!loggedIn) window.location.href = 'html/login.html';
                     await this.loadAssets();
                     
                 },
@@ -194,3 +194,4 @@ async loadAssets() {
                 
             }));
         });
+
