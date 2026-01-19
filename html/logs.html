@@ -20,7 +20,7 @@
     <!-- SIDEBAR (External) -->
   <div x-data="{ sidebarContent: '' }"
      x-init="
-        fetch('/html/sidebar.html')
+        fetch('sidebar.html')
             .then(response => {
                 if (!response.ok) throw new Error('File not found');
                 return response.text();
@@ -156,5 +156,6 @@
 </script>
 </body>
 </html>
+
 
 
