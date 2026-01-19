@@ -66,7 +66,7 @@
             // 4. Ang Init function
             init() {
                 if (localStorage.getItem('isLoggedIn') !== 'true') {
-                    window.location.href = '../html/login.html';
+                    window.location.href = 'html/login.html';
                     return;
                 }
                 
@@ -81,3 +81,4 @@
         }));
 
     });
+
