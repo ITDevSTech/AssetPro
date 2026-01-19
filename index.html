@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AssetPro v2.0 | Dashboard</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-slate-100 font-[Plus Jakarta Sans]">
+
+<div class="flex h-screen overflow-hidden">
+<!-- SIDEBAR --> 
+<div x-data="{ sidebarContent: '' }"
+     x-init="
+        fetch('sidebar.html')
+            .then(response => {
+                if (!response.ok) throw new Error('File not found');
+                return response.text();
+            })
+            .then(html => { 
+                sidebarContent = html; 
+                $nextTick(() => {
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
+                });
+            })
+            .catch(err => console.error('Error loading sidebar:', err))
+     "
+     x-html="sidebarContent">
+</div>
+
+
+<!-- MAIN -->
+<main x-data="dashboardApp" class="flex-1 p-10 overflow-y-auto">
+
+<h2 class="text-3xl font-bold text-slate-900 mb-6">Dashboard</h2>
+
+<!-- STATS -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+
+<!-- TOTAL -->
+<div class="bg-white rounded-2xl shadow-lg p-6">
+  <div class="flex justify-between mb-4">
+    <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center text-white">
+      <i data-lucide="package"></i>
+    </div>
+    <p class="text-sm text-slate-400 font-semibold">Total Assets</p>
+  </div>
+  <p class="text-2xl font-extrabold" x-text="totalAssets"></p>
+</div>
+
+<!-- DEPLOYED -->
+<div class="bg-white rounded-2xl shadow-lg p-6">
+  <div class="flex justify-between mb-4">
+    <div class="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center text-white">
+      <i data-lucide="user-check"></i>
+    </div>
+    <p class="text-sm text-slate-400 font-semibold">Deployed</p>
+  </div>
+  <p class="text-2xl font-extrabold" x-text="deployed"></p>
+</div>
+
+<!-- MAINTENANCE -->
+<div class="bg-white rounded-2xl shadow-lg p-6">
+  <div class="flex justify-between mb-4">
+    <div class="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center text-white">
+      <i data-lucide="wrench"></i>
+    </div>
+    <p class="text-sm text-slate-400 font-semibold">Maintenance</p>
+  </div>
+  <p class="text-2xl font-extrabold" x-text="maintenance"></p>
+</div>
+
+<!-- REPLACEMENT -->
+<div class="bg-white rounded-2xl shadow-lg p-6">
+  <div class="flex justify-between mb-4">
+    <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center text-white">
+      <i data-lucide="replace"></i>
+    </div>
+    <p class="text-sm text-slate-400 font-semibold">Replacement</p>
+  </div>
+  <p class="text-2xl font-extrabold" x-text="replacement"></p>
+</div>
+
+<!-- PENDING -->
+<div class="bg-white rounded-2xl shadow-lg p-6">
+  <div class="flex justify-between mb-4">
+    <div class="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center text-white">
+      <i data-lucide="circle-dashed"></i>
+    </div>
+    <p class="text-sm text-slate-400 font-semibold">Pending</p>
+  </div>
+  <p class="text-2xl font-extrabold" x-text="pending"></p>
+</div>
+
+<!-- IN PROGRESS -->
+<div class="bg-white rounded-2xl shadow-lg p-6">
+  <div class="flex justify-between mb-4">
+    <div class="w-12 h-12 bg-gray-500 rounded-xl flex items-center justify-center text-white">
+      <i data-lucide="hourglass"></i>
+    </div>
+    <p class="text-sm text-slate-400 font-semibold">In Progress</p>
+  </div>
+  <p class="text-2xl font-extrabold" x-text="inProgress"></p>
+</div>
+
+<!-- RESOLVED -->
+<div class="bg-white rounded-2xl shadow-lg p-6">
+  <div class="flex justify-between mb-4">
+    <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center text-white">
+      <i data-lucide="circle-check"></i>
+    </div>
+    <p class="text-sm text-slate-400 font-semibold">Resolved</p>
+  </div>
+  <p class="text-2xl font-extrabold" x-text="resolved"></p>
+</div>
+
+<!-- DISPOSED -->
+<div class="bg-white rounded-2xl shadow-lg p-6">
+  <div class="flex justify-between mb-4">
+    <div class="w-12 h-12 bg-rose-500 rounded-xl flex items-center justify-center text-white">
+      <i data-lucide="trash-2"></i>
+    </div>
+    <p class="text-sm text-slate-400 font-semibold">Disposed</p>
+  </div>
+  <p class="text-2xl font-extrabold" x-text="disposed"></p>
+</div>
+
+</div>
+
+<!-- RECENT ASSETS -->
+<h3 class="text-xl font-bold mb-4">Recent Assets</h3>
+<div class="flex gap-4 flex-wrap mb-10">
+  <template x-for="asset in recentAssets" :key="asset.id">
+    <div class="bg-white p-6 rounded-2xl shadow w-72">
+      <p class="font-bold" x-text="asset.name"></p>
+      <p class="text-sm text-slate-400">SN: <span x-text="asset.sn"></span></p>
+      <p class="text-sm text-slate-400">Assigned: <span x-text="asset.user_name"></span></p>
+    </div>
+  </template>
+</div>
+
+<!-- RECENT USERS -->
+<h3 class="text-xl font-bold mb-4">Recent Users</h3>
+<div class="flex gap-4 flex-wrap">
+  <template x-for="user in recentUsers" :key="user.id">
+    <div class="bg-white p-6 rounded-2xl shadow w-72">
+      <p class="font-bold" x-text="user.username"></p>
+      <p class="text-sm text-slate-400" x-text="user.role"></p>
+    </div>
+  </template>
+</div>
+
+</main>
+</div>
+
+<script src="index.js">
+
+</script>
+
+<script>lucide.createIcons()</script>
+
+</body>
+</html>
