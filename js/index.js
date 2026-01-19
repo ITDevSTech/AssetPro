@@ -66,7 +66,7 @@ this.$nextTick(() => lucide.createIcons());
 
   init() {
     if (localStorage.getItem('isLoggedIn') !== 'true') {
-      window.location.href = 'html/login.html';
+      window.location.href = '../html/login.html';
       return;
     }
     this.loadStats();
@@ -74,3 +74,4 @@ this.$nextTick(() => lucide.createIcons());
 }));
 
 });
+
