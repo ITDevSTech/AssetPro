@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AssetPro v2.0</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+body { font-family: 'Plus Jakarta Sans', sans-serif; }
+[x-cloak]{ display:none }
+.sidebar-active{
+    background:#2563eb;
+    color:white;
+    box-shadow:0 12px 20px -6px rgba(37,99,235,.5)
+}
+</style>
+</head>
+
+<body class="bg-slate-50" x-data="assetApp()" x-init="init()">
+
+<div class="flex h-screen overflow-hidden">
+
+<!-- SIDEBAR -->
+<aside class="w-72 bg-white border-r flex flex-col">
+    <div class="p-8 flex items-center gap-3">
+        <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white">
+            <i data-lucide="layers"></i>
+        </div>
+        <h1 class="text-xl font-extrabold">AssetPro<span class="text-blue-600">.</span></h1>
+    </div>
+
+    <nav class="flex-1 px-4 space-y-2">
+        <template x-for="menu in menus" :key="menu.id">
+            <button
+                @click="currentTab = menu.id"
+                :class="currentTab === menu.id ? 'sidebar-active' : 'text-slate-500 hover:bg-slate-100'"
+                class="w-full flex items-center gap-4 px-5 py-3 rounded-xl font-semibold transition">
+                <i :data-lucide="menu.icon"></i>
+                <span x-text="menu.name"></span>
+            </button>
+        </template>
+    </nav>
+
+    <div class="p-6 border-t">
+        <p class="text-xs text-slate-400 mb-2">System Status</p>
+        <div class="bg-green-100 text-green-700 rounded-xl px-4 py-2 text-sm font-bold">
+            Operational
+        </div>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1 flex flex-col overflow-hidden">
+
+<header class="h-20 bg-white border-b px-10 flex items-center justify-between">
+    <div>
+        <p class="text-xs text-slate-400 uppercase">Workspace</p>
+        <h2 class="text-xl font-bold" x-text="menus.find(m=>m.id===currentTab).name"></h2>
+    </div>
+
+    <div class="flex items-center gap-4">
+        <input type="text" x-model="searchQuery"
+            class="px-4 py-2 rounded-xl bg-slate-100 text-sm focus:ring-2 focus:ring-blue-500"
+            placeholder="Search..." />
+        <button class="p-2 hover:bg-slate-100 rounded-full">
+            <i data-lucide="bell"></i>
+        </button>
+        <img src="https://ui-avatars.com/api/?name=Admin&background=2563eb&color=fff"
+             class="w-10 h-10 rounded-xl">
+    </div>
+</header>
+
+<div class="p-10 overflow-y-auto space-y-10">
+
+<!-- DASHBOARD -->
+<section x-show="currentTab==='dashboard'" x-transition>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<template x-for="stat in stats">
+    <div class="bg-white p-6 rounded-2xl shadow border">
+        <div :class="stat.color" class="w-12 h-12 rounded-xl flex items-center justify-center text-white mb-4">
+            <i :data-lucide="stat.icon"></i>
+        </div>
+        <p class="text-slate-400 text-sm" x-text="stat.label"></p>
+        <p class="text-3xl font-extrabold" x-text="stat.value"></p>
+    </div>
+</template>
+</div>
+</section>
+
+<!-- ASSETS -->
+<section x-show="currentTab==='assets'" x-transition>
+<div class="bg-white rounded-2xl shadow border overflow-hidden">
+    <div class="p-6 flex justify-between items-center border-b">
+        <h3 class="font-bold text-lg">Assets Inventory</h3>
+        <button @click="showAddAsset=true"
+            class="bg-blue-600 text-white px-5 py-2 rounded-xl flex gap-2 font-semibold">
+            <i data-lucide="plus"></i> Add Asset
+        </button>
+    </div>
+
+    <table class="w-full text-sm">
+        <thead class="bg-slate-50 text-slate-500">
+        <tr>
+            <th class="px-6 py-4 text-left">Asset</th>
+            <th>Status</th>
+            <th>User</th>
+        </tr>
+        </thead>
+        <tbody>
+        <template x-for="asset in filteredAssets">
+            <tr class="border-t hover:bg-slate-50">
+                <td class="px-6 py-4 font-semibold" x-text="asset.name"></td>
+                <td>
+                    <span :class="statusClass(asset.status)"
+                        class="px-3 py-1 rounded-full text-xs font-bold"
+                        x-text="asset.status"></span>
+                </td>
+                <td x-text="asset.user"></td>
+            </tr>
+        </template>
+        </tbody>
+    </table>
+</div>
+</section>
+
+<!-- TICKETS -->
+<section x-show="currentTab==='tickets'" x-transition>
+<div class="bg-white rounded-2xl shadow border overflow-hidden">
+    <div class="p-6 flex justify-between items-center border-b">
+        <h3 class="font-bold text-lg">Support Tickets</h3>
+        <button @click="showTicketModal=true"
+            class="bg-blue-600 text-white px-5 py-2 rounded-xl flex gap-2 font-semibold">
+            <i data-lucide="plus"></i> New Ticket
+        </button>
+    </div>
+
+    <table class="w-full text-sm">
+        <thead class="bg-slate-50 text-slate-500">
+            <tr>
+                <th class="px-6 py-4 text-left">Ticket</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <template x-for="ticket in tickets" :key="ticket.id">
+                <tr class="border-t hover:bg-slate-50">
+                    <td class="px-6 py-4">
+                        <p class="font-bold" x-text="ticket.title"></p>
+                        <p class="text-xs text-slate-400" x-text="ticket.id"></p>
+                    </td>
+                    <td x-text="ticket.category"></td>
+                    <td :class="priorityClass(ticket.priority)" x-text="ticket.priority"></td>
+                    <td>
+                        <span :class="ticketStatusClass(ticket.status)"
+                            class="px-3 py-1 rounded-full text-xs font-bold"
+                            x-text="ticket.status"></span>
+                    </td>
+                    <td x-text="ticket.date"></td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</div>
+</section>
+
+<!-- ACCOUNTS -->
+<section x-show="currentTab==='accounts'" x-transition>
+<div class="grid md:grid-cols-3 gap-6">
+<template x-for="user in users">
+<div class="bg-white p-6 rounded-2xl shadow border">
+    <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
+            <span x-text="user.name.charAt(0)"></span>
+        </div>
+        <div>
+            <p class="font-bold" x-text="user.name"></p>
+            <p class="text-xs text-slate-400" x-text="user.role"></p>
+        </div>
+    </div>
+</div>
+</template>
+</div>
+</section>
+
+<!-- ADMIN -->
+<section x-show="currentTab==='admin'" x-transition>
+<div class="bg-white p-8 rounded-2xl shadow border">
+<h3 class="font-bold text-lg mb-4">Admin Controls</h3>
+<ul class="space-y-3 text-sm">
+<li>✔ User Permissions</li>
+<li>✔ Asset Approval</li>
+<li>✔ Ticket Management</li>
+</ul>
+</div>
+</section>
+
+<!-- SETTINGS -->
+<section x-show="currentTab==='settings'" x-transition>
+<div class="bg-white p-8 rounded-2xl shadow border max-w-xl">
+<h3 class="font-bold text-lg mb-6">System Settings</h3>
+<label class="flex items-center justify-between mb-4">
+<span>Email Notifications</span>
+<input type="checkbox" class="accent-blue-600" checked>
+</label>
+<label class="flex items-center justify-between">
+<span>Auto Backup</span>
+<input type="checkbox" class="accent-blue-600">
+</label>
+</div>
+</section>
+
+</div>
+</main>
+</div>
+
+<!-- ADD ASSET MODAL -->
+<div x-show="showAddAsset" x-cloak class="fixed inset-0 bg-black/50 flex items-center justify-center">
+<div class="bg-white p-8 rounded-2xl w-full max-w-md">
+<h3 class="font-bold mb-4">Add Asset</h3>
+<input x-model="newAsset.name" placeholder="Asset Name"
+class="w-full mb-3 px-4 py-2 border rounded-xl">
+<button @click="addAsset()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">
+Save
+</button>
+</div>
+</div>
+
+<!-- ADD TICKET MODAL -->
+<div x-show="showTicketModal" x-cloak class="fixed inset-0 bg-black/50 flex items-center justify-center">
+<div class="bg-white p-8 rounded-2xl w-full max-w-md">
+<h3 class="font-bold mb-4">Create Ticket</h3>
+
+<input x-model="newTicket.title" placeholder="Ticket Title"
+class="w-full mb-3 px-4 py-2 border rounded-xl">
+
+<select x-model="newTicket.category" class="w-full mb-3 px-4 py-2 border rounded-xl">
+<option>Hardware</option>
+<option>Software</option>
+<option>Network</option>
+<option>Request</option>
+</select>
+
+<select x-model="newTicket.priority" class="w-full mb-5 px-4 py-2 border rounded-xl">
+<option>High</option>
+<option>Medium</option>
+<option>Low</option>
+</select>
+
+<button @click="addTicket()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">
+Submit
+</button>
+</div>
+</div>
+
+<script>
+function assetApp(){
+return{
+currentTab:'dashboard',
+searchQuery:'',
+showAddAsset:false,
+showTicketModal:false,
+
+menus:[
+{id:'dashboard',name:'Dashboard',icon:'layout-grid'},
+{id:'assets',name:'Assets',icon:'monitor'},
+{id:'tickets',name:'Tickets',icon:'ticket'},
+{id:'accounts',name:'Accounts',icon:'users'},
+{id:'admin',name:'Admin',icon:'shield-check'},
+{id:'settings',name:'Settings',icon:'settings'},
+],
+
+stats:[
+{label:'Total Assets',value:1420,icon:'package',color:'bg-blue-500'},
+{label:'Deployed',value:1105,icon:'user-check',color:'bg-indigo-500'},
+{label:'Maintenance',value:12,icon:'wrench',color:'bg-amber-500'},
+{label:'Disposed',value:45,icon:'trash-2',color:'bg-rose-500'},
+],
+
+assets:[
+{name:'MacBook Pro',user:'Juan',status:'deployed'},
+{name:'Office Chair',user:'Maria',status:'available'},
+],
+
+users:[
+{name:'Juan Dela Cruz',role:'Employee'},
+{name:'Maria Santos',role:'Manager'},
+{name:'Admin User',role:'Administrator'},
+],
+
+tickets:[
+{id:'TCK-001',title:'Laptop not booting',category:'Hardware',priority:'High',status:'Open',date:'2026-01-15'},
+{id:'TCK-002',title:'Request new mouse',category:'Request',priority:'Low',status:'Closed',date:'2026-01-14'},
+],
+
+newAsset:{name:'',user:'Unassigned',status:'available'},
+newTicket:{title:'',category:'Hardware',priority:'Medium'},
+
+get filteredAssets(){
+return this.assets.filter(a=>a.name.toLowerCase().includes(this.searchQuery.toLowerCase()))
+},
+
+statusClass(s){
+return{
+deployed:'bg-green-100 text-green-700',
+available:'bg-blue-100 text-blue-700',
+maintenance:'bg-amber-100 text-amber-700'
+}[s]
+},
+
+ticketStatusClass(s){
+return{
+Open:'bg-blue-100 text-blue-700',
+Closed:'bg-green-100 text-green-700'
+}[s]
+},
+
+priorityClass(p){
+return{
+High:'text-red-600 font-bold',
+Medium:'text-amber-600 font-semibold',
+Low:'text-slate-500'
+}[p]
+},
+
+addAsset(){
+this.assets.unshift({...this.newAsset})
+this.newAsset={name:'',user:'Unassigned',status:'available'}
+this.showAddAsset=false
+lucide.createIcons()
+},
+
+addTicket(){
+const id='TCK-'+Math.floor(1000+Math.random()*9000)
+const date=new Date().toISOString().split('T')[0]
+this.tickets.unshift({...this.newTicket,id,status:'Open',date})
+this.newTicket={title:'',category:'Hardware',priority:'Medium'}
+this.showTicketModal=false
+lucide.createIcons()
+},
+
+init(){ lucide.createIcons() }
+}
+}
+</script>
+
+</body>
+</html>
