@@ -92,7 +92,7 @@ window.authApp = () => ({
       if (this.currentUser.role.toLowerCase() === 'administrator') {
         window.location.href = '../index.html';
       } else {
-        window.location.href = 'tickets.html';
+        window.location.href = '/html/tickets.html';
       }
 
       // Reset modal & inputs
@@ -134,7 +134,7 @@ alert(`✅ Welcome back, ${user.username}!`);
 if (user.role.toLowerCase() === 'administrator') {
   window.location.href = '../index.html'; // root/index.html
 } else {
-  window.location.href = 'tickets.html';  // html/tickets.html
+  window.location.href = 'html/tickets.html';  // html/tickets.html
 }
 
 
@@ -152,6 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.lucide) lucide.createIcons();
 
 });
+
 
 
 
