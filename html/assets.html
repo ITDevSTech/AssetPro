@@ -36,7 +36,7 @@
    
 <div x-data="{ sidebarContent: '' }"
      x-init="
-        fetch('/sidebar.html')
+        fetch('sidebar.html')
             .then(response => {
                 if (!response.ok) throw new Error('File not found');
                 return response.text();
@@ -207,7 +207,7 @@
     <script src="https://unpkg.com"></script>
 
 
-    <script src="/js/assets.js">
+    <script src="../js/assets.js">
        
         
     </script>
@@ -227,3 +227,4 @@
 
 
 </html>
+
