@@ -90,9 +90,9 @@ window.authApp = () => ({
 
       // Redirect based on role
       if (this.currentUser.role.toLowerCase() === 'administrator') {
-        window.location.href = '/index.html';
+        window.location.href = '../index.html';
       } else {
-        window.location.href = '/html/tickets.html';
+        window.location.href = '../html/tickets.html';
       }
 
       // Reset modal & inputs
@@ -152,4 +152,5 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.lucide) lucide.createIcons();
 
 });
+
 
