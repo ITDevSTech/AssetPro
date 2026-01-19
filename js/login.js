@@ -135,7 +135,7 @@ if (user.role.toLowerCase() === 'administrator') {
   window.location.href = '../index.html'; // root/index.html
 } else {
   window.location.href = '../html/tickets.html';  // html/tickets.html
-}
+},
 
 
 
@@ -152,6 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.lucide) lucide.createIcons();
 
 });
+
 
 
 
