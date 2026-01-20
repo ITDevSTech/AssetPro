@@ -61,7 +61,7 @@ function accountsApp() {
     },
 
     openModal() {
-      this.editMode = false;
+      this.editMode = true;
       this.currentUser = { id: null, username: '', email: '', role: '' };
       this.password = '';
       this.confirmPassword = '';
@@ -168,3 +168,4 @@ function accountsApp() {
     }
   };
 }
+
