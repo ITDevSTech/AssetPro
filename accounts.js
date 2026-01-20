@@ -27,26 +27,7 @@ function accountsApp() {
         if (window.lucide) lucide.createIcons();
       });
     },
- // ✅ ISANG FILTER LANG (GETTER)
-        get filteredUsers() {
-            const q = this.searchQuery.toLowerCase();
-            if (!q) return this.users;
 
-            return this.users.filter(u =>
-                (u.username && u.username.toLowerCase().includes(q)) ||
-                (u.email && u.email.toLowerCase().includes(q)) ||
-                (u.role && u.role.toLowerCase().includes(q))
-            );
-        },
-
-        // ✅ CURRENT DATE NG PC
-        get currentDate() {
-            return new Date().toLocaleDateString('en-PH', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
-            });
-        },
     async loadUsers() {
       const { data, error } = await this.db
         .from('users')

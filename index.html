@@ -10,6 +10,8 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -45,10 +47,16 @@
 <h2 class="text-3xl font-bold text-slate-900 mb-6">Dashboard</h2>
 
 <!-- STATS -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+<div
+  x-ref="statsGrid"
+  x-init="initSortable()"
+  class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10"
+>
+
 
 <!-- TOTAL -->
-<div class="bg-white rounded-2xl shadow-lg p-6">
+<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="total">
+
   <div class="flex justify-between mb-4">
     <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center text-white">
       <i data-lucide="package"></i>
@@ -59,7 +67,8 @@
 </div>
 
 <!-- DEPLOYED -->
-<div class="bg-white rounded-2xl shadow-lg p-6">
+<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="deployed">
+
   <div class="flex justify-between mb-4">
     <div class="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center text-white">
       <i data-lucide="user-check"></i>
@@ -70,7 +79,9 @@
 </div>
 
 <!-- MAINTENANCE -->
-<div class="bg-white rounded-2xl shadow-lg p-6">
+
+<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="maintenance">
+
   <div class="flex justify-between mb-4">
     <div class="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center text-white">
       <i data-lucide="wrench"></i>
@@ -81,7 +92,8 @@
 </div>
 
 <!-- REPLACEMENT -->
-<div class="bg-white rounded-2xl shadow-lg p-6">
+<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="replacement">
+
   <div class="flex justify-between mb-4">
     <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center text-white">
       <i data-lucide="replace"></i>
@@ -92,7 +104,8 @@
 </div>
 
 <!-- PENDING -->
-<div class="bg-white rounded-2xl shadow-lg p-6">
+<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="pending">
+
   <div class="flex justify-between mb-4">
     <div class="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center text-white">
       <i data-lucide="circle-dashed"></i>
@@ -103,7 +116,8 @@
 </div>
 
 <!-- IN PROGRESS -->
-<div class="bg-white rounded-2xl shadow-lg p-6">
+<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="inProgress">
+
   <div class="flex justify-between mb-4">
     <div class="w-12 h-12 bg-gray-500 rounded-xl flex items-center justify-center text-white">
       <i data-lucide="hourglass"></i>
@@ -114,7 +128,7 @@
 </div>
 
 <!-- RESOLVED -->
-<div class="bg-white rounded-2xl shadow-lg p-6">
+<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="resolved">
   <div class="flex justify-between mb-4">
     <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center text-white">
       <i data-lucide="circle-check"></i>
@@ -125,7 +139,8 @@
 </div>
 
 <!-- DISPOSED -->
-<div class="bg-white rounded-2xl shadow-lg p-6">
+<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="disposed">
+
   <div class="flex justify-between mb-4">
     <div class="w-12 h-12 bg-rose-500 rounded-xl flex items-center justify-center text-white">
       <i data-lucide="trash-2"></i>
