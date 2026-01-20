@@ -1,0 +1,41 @@
+/* 1. Global Font */
+body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+/* 2. Base Menu Style */
+.menu-link {
+    display: flex; 
+    align-items: center; 
+    gap: 16px; 
+    padding: 14px 20px; 
+    border-radius: 14px; 
+    font-weight: 700; /* Ginawang 700 para mas bold ang itim */
+    transition: all 0.3s;
+    /* Pilitin na BLACK ang font sa simula */
+    color: #000000 !important; 
+}
+
+/* 3. HOVER Status: Black Text + Light Gray Background */
+/* Gagana ito sa Dashboard, Assets, Tickets, at Admin Tools kapag hinover */
+.menu-link:hover:not(.sidebar-active) {
+    background-color: #f1f5f9 !important; /* Slate-100 */
+    color: #000000 !important;
+    transform: translateX(5px); /* Swabe na usog pakanan */
+}
+
+/* 4. ACTIVE Status: Blue Gradient + White Text */
+.sidebar-active { 
+    background: linear-gradient(135deg, #2563eb, #1d4ed8) !important; 
+    color: #ffffff !important; 
+    box-shadow: 0 10px 25px -10px rgba(37, 99, 235, 0.7); 
+}
+
+/* 5. ACTIVE HOVER: Mananatiling White ang text kahit i-hover ang active link */
+.sidebar-active:hover { 
+    color: #ffffff !important; 
+    transform: translateX(5px); 
+}
+
+/* 6. Icons follow the text color */
+.menu-link i {
+    color: inherit !important;
+}
