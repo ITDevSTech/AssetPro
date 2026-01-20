@@ -62,6 +62,7 @@ function ticketsApp() {
   }
 },
 
+ 
 
 filterTickets() {
   const q = (this.searchQuery || '').toLowerCase();
@@ -135,7 +136,18 @@ filterTickets() {
   this.searchResults = data || [];
 },
 
-
+ async fetchTickets() {
+            try {
+                const { data, error } = await this.db.from('tickets').select('*').limit(1000);
+                if (error) throw error;
+                this.tickets = data || [];
+            } catch (err) {
+                console.error('Tickets Error:', err.message);
+            }
+        },
+        filteredTickets() {
+            return this.tickets; // pwede rin ng filter logic
+        },
    selectAsset(asset) {
     this.currentTicket.asset_id = asset.id;  // ✅ assign asset id
     this.currentTicket.user_name = asset.user_name;
@@ -144,6 +156,23 @@ filterTickets() {
     this.ticketSearch = '';
     this.searchResults = [];
 },
+
+ // Getter para sa filtered assets
+        get filteredTicketss() {
+            return this.tickets; // puwede rin lagyan ng search/filter logic
+        },
+
+        // Current date ng PC
+        get currentDate() {
+            const now = new Date();
+            return now.toLocaleDateString('en-PH', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        },
+
+
 
     async saveTicket() {
   if (!this.currentTicket.user_name || !this.currentTicket.description) {
@@ -284,4 +313,7 @@ filterTickets() {
       }[status] || 'bg-slate-100 text-slate-700';
     }
   }
+
+  
 }
+

@@ -99,6 +99,18 @@
 </tbody>
 </table>
 </div>
+<!-- Footer Summary -->
+<div class="bg-slate-50/50 px-6 py-4 border-t border-slate-100 flex justify-between items-center">
+    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+        Showing
+        <span class="text-blue-600" x-text="filteredUsers.length"></span>
+        results
+    </p>
+    <p class="text-[11px] text-slate-400 italic">
+        Data synchronized:
+        <span x-text="currentDate"></span>
+    </p>
+</div>
 
 <!-- MODAL -->
 <div x-show="showModal" style="display: none;" x-cloak class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -167,5 +179,3 @@ Save
 <script>lucide.createIcons()</script>
 </body>
 </html>
-
-

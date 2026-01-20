@@ -37,7 +37,7 @@
       <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 flex justify-center items-center gap-2 mt-2">
         <i data-lucide="log-in" class="w-5 h-5"></i> Sign In
       </button>
-    <table style="color: blue; font-family: Arial, sans-serif; border-spacing: 10px 0;">
+      <table style="color: blue; font-family: Arial, sans-serif; border-spacing: 10px 0;">
   <tr>
     <td>Administrator:</td>
     <td style="color: green;">username:admin</td>
@@ -55,7 +55,7 @@
 </div>
 
 <!-- Change Password Modal -->
-<div x-show="showModal" style="display: none;" x-cloak class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+<div x-show="showModal" x-cloak class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
   <div class="bg-white w-96 rounded-2xl p-6 shadow-lg">
     <h2 class="text-xl font-bold mb-4">Change Temporary Password</h2>
     <div class="space-y-4">
@@ -67,7 +67,6 @@
     <div class="mt-6 flex justify-end gap-3">
       <button @click="cancelChange()" class="px-4 py-2 border rounded">Cancel</button>
       <button @click="changePassword()" class="px-4 py-2 bg-blue-600 text-white rounded font-bold">Save</button>
-  
     </div>
   </div>
 </div>
@@ -79,12 +78,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-

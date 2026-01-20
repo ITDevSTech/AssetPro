@@ -128,7 +128,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
             <span x-show="!isCollapsed" class="whitespace-nowrap" x-transition.opacity>Settings</span>
         </a>
 
-  <div x-data="{ isCollapsed: false, showLogoutModal: false }">
+       <div x-data="{ isCollapsed: false, showLogoutModal: false }">
 
     <!-- LOGOUT BUTTON -->
     <div class="mt-auto pt-10 border-t">
@@ -175,12 +175,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
 </div>
 
     </nav>
-
-       <!-- DEVELOPER CREDIT -->
-    <div class="mt-auto border-t pt-4 pb-2 px-3 text-center" x-show="!isCollapsed" x-transition.opacity>
-        <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Developed by</p>
-        <p class="text-sm font-bold text-blue-600">Joms Padonan</p>
-    </div>
 </aside>
 
 
@@ -192,9 +186,4 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
     <script>
         lucide.createIcons();
     </script>
-
 </html>
-
-
-
-

@@ -17,7 +17,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-[x-cloak]{display:none!important;}
+
+
 body{font-family:'Plus Jakarta Sans',sans-serif;}
 </style>
 </head>
@@ -106,7 +107,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
       </tbody>
     </table>
   </div>
-
+    <!-- Footer Summary -->
+    <div class="bg-slate-50/50 px-6 py-4 border-t border-slate-100 flex justify-between items-center">
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+            Showing <span class="text-blue-600" x-text="filteredTicketss.length"></span> results
+        </p>
+        <p class="text-[11px] text-slate-400 italic">
+            Data synchronized: <span x-text="currentDate"></span>
+        </p>
+    </div>
   <!-- ================= MODAL ================= -->
 <div x-show="showTicketModal" style="display: none;" class="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
   <div class="bg-white rounded-2xl w-1/2 p-6 shadow-lg">
@@ -194,4 +203,3 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
 
 </body>
 </html>
-

@@ -33,9 +33,8 @@
 <div class="flex h-screen overflow-hidden">
 
     <!-- SIDEBAR -->
-   
-<div x-data="{ sidebarContent: '' }"
-     x-init="
+
+    <div x-data="{ sidebarContent: '' }" x-init="
         fetch('sidebar.html')
             .then(response => {
                 if (!response.ok) throw new Error('File not found');
@@ -50,25 +49,23 @@
                 });
             })
             .catch(err => console.error('Error loading sidebar:', err))
-     "
-     x-html="sidebarContent">
-</div>
+     " x-html="sidebarContent">
+    </div>
 
     <!-- MAIN -->
     <!-- Idagdag ang x-data dito -->
     <main x-data="assetApp" class="flex-1 p-10 overflow-y-auto">
 
         <div class="flex justify-between items-center mb-6">
-    <h2 class="text-3xl font-extrabold text-slate-900">Assets Inventory</h2>
-    
-    <!-- Lalabas lang kung ang role ay Administrator -->
-    <button type="button"
-        x-show="localStorage.getItem('userRole') === 'Administrator'"
-        @click="showAddModal=true; editMode=false; currentAsset={name:'', sn:'', category:'', user_name:'', status:'Available'}"
-        class="bg-blue-600 text-white px-5 py-3 rounded-xl flex items-center gap-2 font-semibold hover:bg-blue-700 transition shadow-lg active:scale-95">
-        <i data-lucide="plus"></i> Add Asset
-    </button>
-</div>
+            <h2 class="text-3xl font-extrabold text-slate-900">Assets Inventory</h2>
+
+            <!-- Lalabas lang kung ang role ay Administrator -->
+            <button type="button" x-show="localStorage.getItem('userRole') === 'Administrator'"
+                @click="showAddModal=true; editMode=false; currentAsset={name:'', sn:'', category:'', user_name:'', status:'Available'}"
+                class="bg-blue-600 text-white px-5 py-3 rounded-xl flex items-center gap-2 font-semibold hover:bg-blue-700 transition shadow-lg active:scale-95">
+                <i data-lucide="plus"></i> Add Asset
+            </button>
+        </div>
 
         <!-- Search + Filters (Dapat may x-model variables sa script) -->
         <div class="flex gap-4 mb-4">
@@ -118,31 +115,31 @@
                                 <span :class="statusClass(asset.status)"
                                     class="px-3 py-1 rounded-full text-xs font-bold" x-text="asset.status"></span>
                             </td>
-                           <td class="px-6 py-4 text-center flex gap-2 justify-center">
-    <!-- Lalabas lang ito kung Administrator ang role -->
-    <template x-if="localStorage.getItem('userRole') === 'Administrator'">
-        <div class="flex gap-2">
-            <!-- Edit button -->
-            <button type="button" @click="editAsset(asset)"
-                class="bg-indigo-500 text-white px-3 py-1 rounded-xl flex items-center gap-1 hover:bg-indigo-600 transition">
-                <i data-lucide="edit-3" class="w-4 h-4"></i>
-                <span>Edit</span>
-            </button>
+                            <td class="px-6 py-4 text-center flex gap-2 justify-center">
+                                <!-- Lalabas lang ito kung Administrator ang role -->
+                                <template x-if="localStorage.getItem('userRole') === 'Administrator'">
+                                    <div class="flex gap-2">
+                                        <!-- Edit button -->
+                                        <button type="button" @click="editAsset(asset)"
+                                            class="bg-indigo-500 text-white px-3 py-1 rounded-xl flex items-center gap-1 hover:bg-indigo-600 transition">
+                                            <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                            <span>Edit</span>
+                                        </button>
 
-            <!-- Delete button -->
-            <button type="button" @click="deleteAsset(asset)"
-                class="bg-rose-500 text-white px-3 py-1 rounded-xl flex items-center gap-1 hover:bg-rose-600 transition">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                <span>Delete</span>
-            </button>
-        </div>
-    </template>
-    
-    <!-- Opsyonal: Placeholder kung hindi Admin (halimbawa, View-only icon) -->
-    <template x-if="localStorage.getItem('userRole') !== 'Administrator'">
-        <span class="text-slate-400 italic text-xs">View Only</span>
-    </template>
-</td>
+                                        <!-- Delete button -->
+                                        <button type="button" @click="deleteAsset(asset)"
+                                            class="bg-rose-500 text-white px-3 py-1 rounded-xl flex items-center gap-1 hover:bg-rose-600 transition">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                            <span>Delete</span>
+                                        </button>
+                                    </div>
+                                </template>
+
+                                <!-- Opsyonal: Placeholder kung hindi Admin (halimbawa, View-only icon) -->
+                                <template x-if="localStorage.getItem('userRole') !== 'Administrator'">
+                                    <span class="text-slate-400 italic text-xs">View Only</span>
+                                </template>
+                            </td>
 
 
 
@@ -154,7 +151,17 @@
             </table>
         </div>
 
-        <div x-show="showAddModal" style="display: none;" x-cloak class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <!-- Footer Summary -->
+    <div class="bg-slate-50/50 px-6 py-4 border-t border-slate-100 flex justify-between items-center">
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+            Showing <span class="text-blue-600" x-text="filteredAssets.length"></span> results
+        </p>
+        <p class="text-[11px] text-slate-400 italic">
+            Data synchronized: <span x-text="currentDate"></span>
+        </p>
+    </div>
+        <div x-show="showAddModal" style="display: none;" x-cloak
+            class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div @click.away="showAddModal=false" class="bg-white p-8 rounded-2xl w-full max-w-md shadow-2xl">
                 <h3 class="font-bold text-xl mb-4" x-text="editMode ? 'Edit Asset' : 'Add Asset'"></h3>
 
@@ -208,8 +215,8 @@
 
 
     <script src="assets.js">
-       
-        
+
+
     </script>
 
 
@@ -217,13 +224,12 @@
 
 
 
-   
+
 
 
 
 
     <script>lucide.createIcons()</script>
     </body>
-
 
 </html>

@@ -87,6 +87,20 @@ async loadAssets() {
     }
 },
 
+   // Getter para sa filtered assets
+        get filteredAssets() {
+            return this.assets; // puwede rin lagyan ng search/filter logic
+        },
+
+        // Current date ng PC
+        get currentDate() {
+            const now = new Date();
+            return now.toLocaleDateString('en-PH', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        },
                 async saveAsset() {
                     const username = localStorage.getItem('userName');
                     const role = localStorage.getItem('userRole');
