@@ -57,7 +57,7 @@ document.addEventListener('alpine:init', () => {
       ];
 
       const total = await db
-        .from('assets_duplicate')
+        .from('assets')
         .select('id', { count: 'exact', head: true });
 
       this.totalAssets = total.count || 0;
@@ -73,7 +73,7 @@ document.addEventListener('alpine:init', () => {
 
       // RECENT ASSETS
       const { data: assets } = await db
-        .from('assets_duplicate')
+        .from('assets')
         .select('id,name,sn,user_name')
         .order('id', { ascending: false })
         .limit(5);
@@ -82,7 +82,7 @@ document.addEventListener('alpine:init', () => {
 
       // RECENT USERS
       const { data: users } = await db
-        .from('users_duplicate')
+        .from('users')
         .select('id, username, role')
         .order('id', { ascending: false })
         .limit(5);
@@ -107,3 +107,4 @@ document.addEventListener('alpine:init', () => {
 
   }));
 });
+
