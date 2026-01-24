@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AssetPro v2.0 | System Logs</title>
+     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -42,42 +43,45 @@
     <!-- MAIN CONTENT -->
     <main class="flex-1 p-10 overflow-y-auto" x-data="logsApp()" x-init="init()">
         
-        <!-- HEADER & FILTERS -->
-        <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-8 gap-6">
-            <div>
-                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">System Activity Logs</h2>
-                <p class="text-slate-500 text-sm mt-1">Real-time audit trail of system events (2026)</p>
-            </div>
-            
-            <div class="flex flex-wrap items-center gap-3">
-                <!-- Username Search -->
-                <div class="flex flex-col gap-1">
-                    <label class="text-[10px] uppercase font-bold text-slate-400 ml-1">Quick Search</label>
-                    <input type="text" placeholder="Search user/action..." x-model="searchQuery"
-                           class="px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white w-full sm:w-60 shadow-sm transition-all">
-                </div>
+       <!-- HEADER & FILTERS -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between mb-8 gap-6">
+    <div>
+        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">System Activity Logs</h2>
+        <p class="text-slate-500 text-sm mt-1">Real-time audit trail of system events (2026)</p>
+    </div>
+    
+    <!-- Pinalitan ang items-center ng items-end para lahat ng filters at button ay pantay sa ilalim -->
+    <div class="flex flex-wrap items-end gap-3">
+        <!-- Username Search -->
+        <div class="flex flex-col gap-1">
+            <label class="text-[10px] uppercase font-bold text-slate-400 ml-1">Quick Search</label>
+            <input type="text" placeholder="Search user/action..." x-model="searchQuery"
+                   class="px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white w-full sm:w-60 shadow-sm transition-all">
+        </div>
 
-                <!-- Date Range Container -->
-                <div class="flex flex-col gap-1">
-                    <label class="text-[10px] uppercase font-bold text-slate-400 ml-1">Date Range Filter</label>
-                    <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2 shadow-sm">
-                        <input type="date" x-model="startDate" class="outline-none border-none text-sm bg-transparent text-slate-600">
-                        <span class="text-slate-300 font-bold">→</span>
-                        <input type="date" x-model="endDate" class="outline-none border-none text-sm bg-transparent text-slate-600">
-                    </div>
-                </div>
-
-                <!-- Search/Refresh Button -->
-                <div class="flex items-end h-full">
-                    <button @click="fetchLogs()" 
-                            class="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all active:scale-95">
-                        <i data-lucide="search" x-show="!loading" class="w-4 h-4"></i>
-                        <i data-lucide="refresh-cw" x-show="loading" class="w-4 h-4 animate-spin"></i>
-                        <span x-text="loading ? 'Searching...' : 'Search'"></span>
-                    </button>
-                </div>
+        <!-- Date Range Container -->
+        <div class="flex flex-col gap-1">
+            <label class="text-[10px] uppercase font-bold text-slate-400 ml-1">Date Range Filter</label>
+            <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2 shadow-sm h-[46px]"> <!-- Added fixed height to match input -->
+                <input type="date" x-model="startDate" class="outline-none border-none text-sm bg-transparent text-slate-600">
+                <span class="text-slate-300 font-bold">→</span>
+                <input type="date" x-model="endDate" class="outline-none border-none text-sm bg-transparent text-slate-600">
             </div>
         </div>
+
+        <!-- Search/Refresh Button -->
+        <!-- Inalis ang flex items-end h-full, ginawang simple div -->
+        <div>
+            <button @click="fetchLogs()" 
+                    class="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all active:scale-95 h-[46px]"> <!-- Match height here -->
+                <i data-lucide="search" x-show="!loading" class="w-4 h-4"></i>
+                <i data-lucide="refresh-cw" x-show="loading" class="w-4 h-4 animate-spin"></i>
+                <span x-text="loading ? 'Searching...' : 'Search'"></span>
+            </button>
+        </div>
+    </div>
+</div>
+
 
         <!-- LOGS TABLE -->
         <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden">
@@ -90,6 +94,7 @@
                             <th class="px-6 py-5 text-left tracking-wider">System Role</th>
                             <th class="px-6 py-5 text-left tracking-wider">Activity/Action</th>
                             <th class="px-6 py-5 text-left tracking-wider">Module</th>
+                             <th class="px-6 py-5 text-left tracking-wider">Ip Address</th>
                             <th class="px-6 py-5 text-left tracking-wider">Timestamp</th>
                         </tr>
                     </thead>
@@ -123,6 +128,7 @@
                                 <td class="px-6 py-4">
                                     <span class="text-slate-500 italic" x-text="log.module"></span>
                                 </td>
+                                 <td class="px-6 py-4 text-slate-600 font-medium" x-text="log.ip_address"></td>
                                 <td class="px-6 py-4 text-slate-500 whitespace-nowrap" x-text="formatDate(log.created_at)"></td>
                             </tr>
                         </template>
@@ -147,6 +153,18 @@
                 </p>
                 <p class="text-[11px] text-slate-400 italic">Data synchronized: Jan 19, 2026</p>
             </div>
+            <div class="flex justify-between items-center px-6 py-4 bg-slate-50/50 border-t border-slate-100">
+    <button @click="prevPage()" :disabled="page === 1"
+        class="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+
+    <span class="text-sm text-slate-500">
+        Page <span x-text="page"></span> of <span x-text="Math.ceil(totalLogs / limit)"></span>
+    </span>
+
+    <button @click="nextPage()" :disabled="page >= Math.ceil(totalLogs / limit)"
+        class="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+</div>
+
         </div>
     </main>
 </div>

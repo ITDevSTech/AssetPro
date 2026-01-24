@@ -110,34 +110,49 @@ window.authApp = () => ({
   },
 
   // Complete login for normal flow
-  async completeLogin(user) {
-    localStorage.setItem('isLoggedIn', 'true');
-    localStorage.setItem('userId', user.id);
-    localStorage.setItem('userName', user.username);
-    localStorage.setItem('userRole', user.role);
+async completeLogin(user) {
+  localStorage.setItem('isLoggedIn', 'true');
+  localStorage.setItem('userId', user.id);
+  localStorage.setItem('userName', user.username);
+  localStorage.setItem('userRole', user.role);
 
-    // Log the login
+  // LOGGING - Hintayin itong matapos bago ang alert/redirect
+   let userIp = "Unknown";
+
+  // Array ng mga libreng IP APIs para sa redundancy
+  const ipProviders = [
+    'https://api.ipify.org?format=json',
+    'https://ipapi.co',
+    'https://api.seeip.org'
+  ];
+
+  for (const url of ipProviders) {
     try {
-      await supabaseClient.from('logs').insert([{
-        user_id: user.id,
-        username: user.username,
-        role: user.role,
-        action: 'LOGIN',
-        module: 'AUTH'
-      }]);
-    } catch (err) {
-      console.warn('Logging failed but login succeeded', err);
+      const response = await fetch(url, { timeout: 3000 }); // 3 seconds timeout
+      const data = await response.json();
+      userIp = data.ip || data.query; // ipapi.co uses 'ip', others use 'ip' or 'query'
+      if (userIp) break; // Kapag nakakuha na, stop na sa loop
+    } catch (e) {
+      console.warn(`Failed to fetch IP from ${url}`);
     }
+  }
 
-    // Alert first, then redirect
-    alert(`✅ Welcome back, ${user.username}!`);
-    if (user.role.toLowerCase() === 'administrator') {
-      window.location.href = 'index.html';
-    } else {
-      window.location.href = 'tickets.html';
-    }
-  },
+  // I-save ang Log sa Supabase
+  const { error: logError } = await supabaseClient
+    .from('logs')
+    .insert([{
+      user_id: user.id,
+      username: user.username,
+      role: user.role,
+      action: 'LOGIN',
+      module: 'AUTH',
+      ip_address: userIp
+    }]);
 
+  // Rest of your redirect logic...
+  alert(`✅ Welcome back, ${user.username}! IP: ${userIp}`);
+  window.location.href = user.role.toLowerCase() === 'administrator' ? 'index.html' : 'tickets.html';
+},
   cancelChange() {
     this.showModal = false;
     this.newPassword = '';

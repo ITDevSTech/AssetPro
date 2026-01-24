@@ -8,7 +8,17 @@ function ticketsApp() {
     searchResults: [],
     showTicketModal: false,
     editMode: false,
+   
     isAdmin: localStorage.getItem('userRole') === 'Administrator',
+
+    // ✅ Confirmation Modal object
+    confirmModal: {
+      show: false,
+      type: '',
+      title: '',
+      message: '',
+      onConfirm: null
+    },
 
     currentTicket: {
       id: null,
@@ -25,59 +35,50 @@ function ticketsApp() {
         'https://kjgsdcbehsmspadyauhc.supabase.co',
         'sb_publishable_rYCdnbva4YfBY0z5B0JiFg_Krw7KnYy'
       );
-
       await this.loadTickets();
       this.$nextTick(() => window.lucide?.createIcons());
+       limit(10000);
     },
 
-  async loadTickets() {
-  try {
-    const userRole = (localStorage.getItem('userRole') || '').toLowerCase();
-    const username = localStorage.getItem('userName');
+    async loadTickets() {
+      try {
+        const userRole = (localStorage.getItem('userRole') || '').toLowerCase();
+        const username = localStorage.getItem('userName');
 
-    let query = this.db.from('tickets').select('*').order('id', { ascending: false });
+        let query = this.db.from('tickets').select('*').order('id', { ascending: false });
 
-    if (userRole !== 'administrator') {
-      if (!username) {
-        console.warn('No username found in localStorage for non-admin user.');
-        this.tickets = [];
-        this.filteredTickets = [];
-        return;
+        if (userRole !== 'administrator') {
+          if (!username) {
+            console.warn('No username found in localStorage for non-admin user.');
+            this.tickets = [];
+            this.filteredTickets = [];
+            return;
+          }
+          query = query.eq('user_name', username.trim());
+        }
+
+        const { data, error } = await query;
+        if (error) {
+          console.error('Error loading tickets:', error);
+          return;
+        }
+
+        this.tickets = data || [];
+        this.filterTickets();
+      } catch (err) {
+        console.error('Unexpected error loading tickets:', err);
       }
-      query = query.eq('user_name', username.trim()); // Trim to avoid spaces
-    }
+    },
 
-    const { data, error } = await query;
-
-    if (error) {
-      console.error('Error loading tickets:', error);
-      return;
-    }
-
-    this.tickets = data || [];
-    this.filterTickets();
-
-  } catch (err) {
-    console.error('Unexpected error loading tickets:', err);
-  }
-},
-
- 
-
-filterTickets() {
-  const q = (this.searchQuery || '').toLowerCase();
-
-  // Filter only the tickets already loaded (respecting the role filtering)
-  this.filteredTickets = this.tickets.filter(t =>
-    (t.user_name || '').toLowerCase().includes(q) ||
-    (t.sn || '').toLowerCase().includes(q) ||
-    (t.description || '').toLowerCase().includes(q)
-  );
-
-  // Re-render icons
-  this.$nextTick(() => window.lucide?.createIcons());
-},
-
+    filterTickets() {
+      const q = (this.searchQuery || '').toLowerCase();
+      this.filteredTickets = this.tickets.filter(t =>
+        (t.user_name || '').toLowerCase().includes(q) ||
+        (t.sn || '').toLowerCase().includes(q) ||
+        (t.description || '').toLowerCase().includes(q)
+      );
+      this.$nextTick(() => window.lucide?.createIcons());
+    },
 
     openModal() {
       this.editMode = false;
@@ -105,199 +106,170 @@ filterTickets() {
       this.showTicketModal = true;
     },
 
- async searchAssets() {
-  if (!this.ticketSearch) {
-    this.searchResults = [];
-    return;
-  }
+    async searchAssets() {
+      if (!this.ticketSearch) {
+        this.searchResults = [];
+        return;
+      }
 
-  const q = `%${this.ticketSearch}%`;
+      const q = `%${this.ticketSearch}%`;
+      let query = this.db
+        .from('assets')
+        .select('id, user_name, sn, name')
+        .or(`user_name.ilike.${q},sn.ilike.${q}`)
+        .limit(5);
 
-  let query = this.db
-    .from('assets')
-    .select('id, user_name, sn, name')
-    .or(`user_name.ilike.${q},sn.ilike.${q}`)
-    .limit(5);
+      if (localStorage.getItem('userRole')?.toLowerCase() !== 'administrator') {
+        const username = localStorage.getItem('userName');
+        query = query.eq('user_name', username);
+      }
 
-  // If not admin, filter by the logged-in user
-  if (localStorage.getItem('userRole')?.toLowerCase() !== 'administrator') {
-    const username = localStorage.getItem('userName');
-    query = query.eq('user_name', username);
-  }
+      const { data, error } = await query;
+      if (error) {
+        console.error('Search assets error:', error);
+        this.searchResults = [];
+        return;
+      }
 
-  const { data, error } = await query;
+      this.searchResults = data || [];
+    },
 
-  if (error) {
-    console.error('Search assets error:', error);
-    this.searchResults = [];
-    return;
-  }
-
-  this.searchResults = data || [];
-},
-
- async fetchTickets() {
-            try {
-                const { data, error } = await this.db.from('tickets').select('*').limit(1000);
-                if (error) throw error;
-                this.tickets = data || [];
-            } catch (err) {
-                console.error('Tickets Error:', err.message);
-            }
-        },
-        filteredTickets() {
-            return this.tickets; // pwede rin ng filter logic
-        },
-   selectAsset(asset) {
-    this.currentTicket.asset_id = asset.id;  // ✅ assign asset id
-    this.currentTicket.user_name = asset.user_name;
-    this.currentTicket.sn = asset.sn;
-    this.currentTicket.item_name = asset.name;
-    this.ticketSearch = '';
-    this.searchResults = [];
-},
-
- // Getter para sa filtered assets
-        get filteredTicketss() {
-            return this.tickets; // puwede rin lagyan ng search/filter logic
-        },
-
-        // Current date ng PC
-        get currentDate() {
-            const now = new Date();
-            return now.toLocaleDateString('en-PH', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
-            });
-        },
-
-
+    selectAsset(asset) {
+      this.currentTicket.asset_id = asset.id;
+      this.currentTicket.user_name = asset.user_name;
+      this.currentTicket.sn = asset.sn;
+      this.currentTicket.item_name = asset.name;
+      this.ticketSearch = '';
+      this.searchResults = [];
+    },
 
     async saveTicket() {
-  if (!this.currentTicket.user_name || !this.currentTicket.description) {
-    alert('Username and description are required.');
-    return;
-  }
+      if (!this.currentTicket.user_name || !this.currentTicket.description) {
+    this.messageModal = {
+  show: true,
 
-  try {
-    if (this.editMode) {
-      // 1️⃣ UPDATE ticket
-      const { error: ticketErr } = await this.db
-        .from('tickets')
-        .update({
-          description: this.currentTicket.description,
-          status: this.currentTicket.status
-        })
-        .eq('id', this.currentTicket.id);
+  message: 'Username or Password Incorrect'
+};
 
-      if (ticketErr) throw ticketErr;
-
-      // 2️⃣ UPDATE asset status by SN
-      if (this.currentTicket.sn) {
-        const { error: assetErr } = await this.db
-          .from('assets')
-          .update({ status: this.currentTicket.status })
-          .eq('sn', this.currentTicket.sn);
-
-        if (assetErr) throw assetErr;
+        return;
       }
 
-      alert('Ticket updated and asset status updated!');
+      // ✅ Modal confirmation
+      this.confirmModal = {
+        show: true,
+        type: 'save',
+        title: this.editMode ? 'Confirm Update' : 'Confirm Add',
+        message: this.editMode
+          ? `Are you sure you want to update ticket for ${this.currentTicket.item_name}?`
+          : `Are you sure you want to add new ticket for ${this.currentTicket.item_name}?`,
+        onConfirm: async () => {
+          try {
+            if (this.editMode) {
+              const { error: ticketErr } = await this.db
+                .from('tickets')
+                .update({
+                  description: this.currentTicket.description,
+                  status: this.currentTicket.status
+                })
+                .eq('id', this.currentTicket.id);
+              if (ticketErr) throw ticketErr;
 
-    } else {
-      // INSERT ticket
-      const { data: { user } } = await this.db.auth.getUser();
-      const { error: insertErr } = await this.db
-        .from('tickets')
-        .insert([{
-          sn: this.currentTicket.sn,
-          item_name: this.currentTicket.item_name,
-          user_name: this.currentTicket.user_name,
-          description: this.currentTicket.description,
-          status: this.currentTicket.status,
-          user_id: user ? user.id : null
-        }]);
+              if (this.currentTicket.sn) {
+                const { error: assetErr } = await this.db
+                  .from('assets')
+                  .update({ status: this.currentTicket.status })
+                  .eq('sn', this.currentTicket.sn);
+                if (assetErr) throw assetErr;
+              }
+              
+              alert('Ticket updated and asset status updated!');
+            } else {
+              const { data: { user } } = await this.db.auth.getUser();
+              const { error: insertErr } = await this.db
+                .from('tickets')
+                .insert([{
+                  sn: this.currentTicket.sn,
+                  item_name: this.currentTicket.item_name,
+                  user_name: this.currentTicket.user_name,
+                  description: this.currentTicket.description,
+                  status: this.currentTicket.status,
+                  user_id: user ? user.id : null
+                }]);
+              if (insertErr) throw insertErr;
 
-      if (insertErr) throw insertErr;
+              if (this.currentTicket.sn) {
+                const { error: assetErr } = await this.db
+                  .from('assets')
+                  .update({ status: this.currentTicket.status })
+                  .eq('sn', this.currentTicket.sn);
+                if (assetErr) throw assetErr;
+              }
 
-      // UPDATE asset status by SN
-      if (this.currentTicket.sn) {
-        const { error: assetErr } = await this.db
-          .from('assets')
-          .update({ status: this.currentTicket.status })
-          .eq('sn', this.currentTicket.sn);
+              alert('Ticket added and asset status updated!');
+            }
 
-        if (assetErr) throw assetErr;
-      }
+            this.closeModal();
+            await this.loadTickets();
+          } catch (err) {
+            console.error(err);
+            alert('Operation failed: ' + err.message);
+          }
+        }
+      };
+    },
 
-      alert('Ticket added and asset status updated!');
-    }
+    async deleteTicket(id, asset_id) {
+      this.confirmModal = {
+        show: true,
+        type: 'delete',
+        title: 'Confirm Close Ticket',
+        message: 'Are you sure you want to close this ticket?',
+        onConfirm: async () => {
+          try {
+            const { data: ticketData, error: fetchErr } = await this.db
+              .from('tickets')
+              .select('*')
+              .eq('id', id)
+              .single();
+            if (fetchErr) throw fetchErr;
 
-    this.closeModal();
-    await this.loadTickets();
+            const { error: insertErr } = await this.db
+              .from('closed_tickets')
+              .insert([{
+                sn: ticketData.sn,
+                item_name: ticketData.item_name,
+                user_name: ticketData.user_name,
+                description: ticketData.description,
+                status: ticketData.status,
+                asset_id: ticketData.asset_id,
+                created_at: ticketData.created_at,
+                updated_at: ticketData.updated_at
+              }]);
+            if (insertErr) throw insertErr;
 
-  } catch (err) {
-    console.error(err);
-    alert('Operation failed: ' + err.message);
-  }
-},
+            const { error: delErr } = await this.db
+              .from('tickets')
+              .delete()
+              .eq('id', id);
+            if (delErr) throw delErr;
 
-   async deleteTicket(id, asset_id) {
-  if (!confirm('Close this ticket?')) return;
+            if (asset_id) {
+              const { error: assetErr } = await this.db
+                .from('assets')
+                .update({ status: ticketData.status })
+                .eq('id', asset_id);
+              if (assetErr) throw assetErr;
+            }
 
-  try {
-    // 1️⃣ Kunin muna ang ticket bago idelete
-    const { data: ticketData, error: fetchErr } = await this.db
-      .from('tickets')
-      .select('*')
-      .eq('id', id)
-      .single(); // kukunin lang 1 row
-
-    if (fetchErr) throw fetchErr;
-
-    // 2️⃣ I-save sa Closed_Tickets
-    const { error: insertErr } = await this.db
-      .from('closed_tickets')   // lowercase
-      .insert([{
-        sn: ticketData.sn,
-        item_name: ticketData.item_name,
-        user_name: ticketData.user_name,
-        description: ticketData.description,
-        status: ticketData.status,
-        asset_id: ticketData.asset_id,
-        created_at: ticketData.created_at,
-        updated_at: ticketData.updated_at
-      }]);
-
-    if (insertErr) throw insertErr;
-
-    // 3️⃣ I-delete sa original tickets table
-    const { error: delErr } = await this.db
-      .from('tickets')
-      .delete()
-      .eq('id', id);
-
-    if (delErr) throw delErr;
-
-    // 4️⃣ UPDATE asset status to match ticket status
-    if (asset_id) {
-      const { error: assetErr } = await this.db
-        .from('assets')
-        .update({ status: ticketData.status }) // <-- use ticket status
-        .eq('id', asset_id);
-      if (assetErr) throw assetErr;
-    }
-
-    await this.loadTickets();
-    alert('Ticket closed');
-
-  } catch (err) {
-    console.error(err);
-    alert('Close failed: ' + err.message);
-  }
-},
-
+            await this.loadTickets();
+            alert('Ticket closed!');
+          } catch (err) {
+            console.error(err);
+            alert('Close failed: ' + err.message);
+          }
+        }
+      };
+    },
 
     statusClass(status) {
       return {
@@ -313,7 +285,4 @@ filterTickets() {
       }[status] || 'bg-slate-100 text-slate-700';
     }
   }
-
-  
 }
-

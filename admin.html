@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AssetPro v2.0 | Admin Panel</title>
+ <link rel="stylesheet" href="style.css">
 
 <!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -47,29 +48,32 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
 
 
 <!-- ================= MAIN ================= -->
-<main class="flex-1 p-10"
-x-data
-x-init="
-  if(localStorage.getItem('isLoggedIn')!=='true')
-    window.location.href='login.html';
-  if(localStorage.getItem('userRole')!=='Administrator')
-    window.location.href='index.html';
-">
+<!-- ================= MAIN ================= -->
+<!-- Idinagdag ang overflow-y-auto at binawasan ang padding sa mobile (p-6) -->
+<main class="flex-1 p-6 md:p-10 overflow-y-auto"
+      x-data
+      x-init="
+        if(localStorage.getItem('isLoggedIn')!=='true')
+          window.location.href='login.html';
+        if(localStorage.getItem('userRole')!=='Administrator')
+          window.location.href='index.html';
+      ">
 
   <!-- HEADER -->
   <div class="mb-8">
-    <h2 class="text-3xl font-extrabold text-slate-900">Admin Control Center</h2>
+    <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900">Admin Control Center</h2>
     <p class="text-slate-500 mt-1">
       System-wide management & oversight
     </p>
   </div>
 
   <!-- ADMIN CARDS -->
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+  <!-- Ginawang grid-cols-1 para sa mobile para hindi sila mag-overlap -->
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 pb-10">
 
     <!-- MANAGE USERS -->
     <a href="accounts.html"
-      class="group bg-white rounded-2xl shadow border p-6 hover:shadow-xl transition">
+      class="group bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl transition active:scale-95">
       <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-4">
         <i data-lucide="users"></i>
       </div>
@@ -84,7 +88,7 @@ x-init="
 
     <!-- APPROVE ASSETS -->
     <a href="assets.html"
-      class="group bg-white rounded-2xl shadow border p-6 hover:shadow-xl transition">
+      class="group bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl transition active:scale-95">
       <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-4">
         <i data-lucide="check-circle"></i>
       </div>
@@ -99,7 +103,7 @@ x-init="
 
     <!-- TICKET OVERSIGHT -->
     <a href="tickets.html"
-      class="group bg-white rounded-2xl shadow border p-6 hover:shadow-xl transition">
+      class="group bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl transition active:scale-95">
       <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center mb-4">
         <i data-lucide="life-buoy"></i>
       </div>
@@ -114,7 +118,7 @@ x-init="
 
     <!-- SYSTEM LOGS -->
     <a href="logs.html"
-      class="group bg-white rounded-2xl shadow border p-6 hover:shadow-xl transition">
+      class="group bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl transition active:scale-95">
       <div class="w-12 h-12 bg-slate-200 text-slate-700 rounded-xl flex items-center justify-center mb-4">
         <i data-lucide="file-text"></i>
       </div>
@@ -128,24 +132,23 @@ x-init="
     </a>
 
     <!-- CLOSED TICKETS -->
-<a href="Closed_tickets.html"
-   class="group bg-white rounded-2xl shadow border p-6 hover:shadow-xl transition">
-  <div class="w-12 h-12 bg-gray-100 text-gray-600 rounded-xl flex items-center justify-center mb-4">
-    <i data-lucide="archive"></i>
+    <a href="Closed_Tickets.html"
+       class="group bg-white rounded-2xl shadow-sm border border-slate-200 p-6 hover:shadow-xl transition active:scale-95">
+      <div class="w-12 h-12 bg-gray-100 text-gray-600 rounded-xl flex items-center justify-center mb-4">
+        <i data-lucide="archive"></i>
+      </div>
+      <h3 class="font-extrabold text-lg">Closed Tickets</h3>
+      <p class="text-sm text-slate-500 mt-1">
+        View all resolved and closed tickets
+      </p>
+      <span class="text-gray-600 font-bold text-sm mt-4 inline-block group-hover:translate-x-1 transition">
+        View → 
+      </span>
+    </a>
+
   </div>
-  <h3 class="font-extrabold text-lg">Closed Tickets</h3>
-  <p class="text-sm text-slate-500 mt-1">
-    View all resolved and closed tickets
-  </p>
-  <span class="text-gray-600 font-bold text-sm mt-4 inline-block group-hover:translate-x-1 transition">
-    View → 
-  </span>
-</a>
-
-
-  </div>
-
 </main>
+
 </div>
 
 <script>lucide.createIcons()</script>

@@ -80,3 +80,16 @@
             }
         }));
     });
+
+
+function loadPage(url) {
+    fetch(url)
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById('main-content').innerHTML = html;
+            if (window.lucide) lucide.createIcons(); // refresh icons
+        })
+        .catch(err => console.error('Failed to load page:', err));
+}
+
+    

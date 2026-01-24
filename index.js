@@ -11,7 +11,7 @@ document.addEventListener('alpine:init', () => {
     maintenance: 0,
     disposed: 0,
     replacement: 0,
-    pending: 0,
+   available: 0,
     inProgress: 0,
     resolved: 0,
 
@@ -51,7 +51,7 @@ document.addEventListener('alpine:init', () => {
         ['maintenance','Maintenance'],
         ['disposed','Disposed'],
         ['replacement','Replacement'],
-        ['pending','Pending'],
+        ['available','Available'],
         ['inProgress','In Progress'],
         ['resolved','Resolved']
       ];
@@ -64,7 +64,7 @@ document.addEventListener('alpine:init', () => {
 
       for (const [key, value] of statuses) {
         const res = await db
-          .from('assets_duplicate')
+          .from('assets')
           .select('id', { count: 'exact', head: true })
           .eq('status', value);
 
@@ -74,7 +74,7 @@ document.addEventListener('alpine:init', () => {
       // RECENT ASSETS
       const { data: assets } = await db
         .from('assets')
-        .select('id,name,sn,user_name')
+        .select('id,name,sn,user_name,status')
         .order('id', { ascending: false })
         .limit(5);
 

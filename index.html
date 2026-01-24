@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+ <link rel="stylesheet" href="style.css">
 <title>AssetPro v2.0 | Dashboard</title>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
@@ -54,129 +56,291 @@
 >
 
 
-<!-- TOTAL -->
-<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="total">
-
+<!-- TOTAL (Blue) -->
+<div @click="window.location.href='assets.html'" 
+     class="stat-card group bg-blue-50 rounded-2xl shadow-md p-6 cursor-pointer hover:bg-blue-100 transition border border-blue-100" data-key="total">
   <div class="flex justify-between mb-4">
-    <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center text-white">
+    <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center text-white transition-transform duration-300 ease-in-out group-hover:rotate-12 shadow-lg shadow-blue-200">
       <i data-lucide="package"></i>
     </div>
-    <p class="text-sm text-slate-400 font-semibold">Total Assets</p>
+    <p class="text-sm text-blue-600 font-bold uppercase tracking-wider">Total Assets</p>
   </div>
-  <p class="text-2xl font-extrabold" x-text="totalAssets"></p>
+  <p class="text-2xl font-extrabold text-blue-900" x-text="totalAssets"></p>
 </div>
 
-<!-- DEPLOYED -->
-<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="deployed">
-
+<!-- DEPLOYED (Indigo) -->
+<div @click="window.location.href='assets.html?status=Deployed'" 
+     class="stat-card group bg-indigo-50 rounded-2xl shadow-md p-6 cursor-pointer hover:bg-indigo-100 transition border border-indigo-100" data-key="deployed">
   <div class="flex justify-between mb-4">
-    <div class="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center text-white">
+    <div class="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center text-white transition-transform duration-300 ease-in-out group-hover:scale-110 shadow-lg shadow-indigo-200">
       <i data-lucide="user-check"></i>
     </div>
-    <p class="text-sm text-slate-400 font-semibold">Deployed</p>
+    <p class="text-sm text-indigo-600 font-bold uppercase tracking-wider">Deployed</p>
   </div>
-  <p class="text-2xl font-extrabold" x-text="deployed"></p>
+  <p class="text-2xl font-extrabold text-indigo-900" x-text="deployed"></p>
 </div>
 
-<!-- MAINTENANCE -->
-
-<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="maintenance">
-
+<!-- MAINTENANCE (Amber) -->
+<div @click="window.location.href='assets.html?status=Maintenance'" 
+     class="stat-card group bg-amber-50 rounded-2xl shadow-md p-6 cursor-pointer hover:bg-amber-100 transition border border-amber-100" data-key="maintenance">
   <div class="flex justify-between mb-4">
-    <div class="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center text-white">
+    <div class="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center text-white transition-transform duration-300 ease-in-out group-hover:rotate-45 shadow-lg shadow-amber-200">
       <i data-lucide="wrench"></i>
     </div>
-    <p class="text-sm text-slate-400 font-semibold">Maintenance</p>
+    <p class="text-sm text-amber-600 font-bold uppercase tracking-wider">Maintenance</p>
   </div>
-  <p class="text-2xl font-extrabold" x-text="maintenance"></p>
+  <p class="text-2xl font-extrabold text-amber-900" x-text="maintenance"></p>
 </div>
 
-<!-- REPLACEMENT -->
-<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="replacement">
-
+<!-- REPLACEMENT (Purple) -->
+<div @click="window.location.href='assets.html?status=Replacement'" 
+     class="stat-card group bg-purple-50 rounded-2xl shadow-md p-6 cursor-pointer hover:bg-purple-100 transition border border-purple-100" data-key="replacement">
   <div class="flex justify-between mb-4">
-    <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center text-white">
+    <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center text-white transition-transform duration-300 ease-in-out group-hover:rotate-180 shadow-lg shadow-purple-200">
       <i data-lucide="replace"></i>
     </div>
-    <p class="text-sm text-slate-400 font-semibold">Replacement</p>
+    <p class="text-sm text-purple-600 font-bold uppercase tracking-wider">Replacement</p>
   </div>
-  <p class="text-2xl font-extrabold" x-text="replacement"></p>
+  <p class="text-2xl font-extrabold text-purple-900" x-text="replacement"></p>
 </div>
 
-<!-- PENDING -->
-<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="pending">
-
+<!-- AVAILABLE (Green) -->
+<div @click="window.location.href='assets.html?status=Available'" 
+     class="stat-card group bg-green-50 rounded-2xl shadow-md p-6 cursor-pointer hover:bg-green-100 transition border border-green-100" data-key="available">
   <div class="flex justify-between mb-4">
-    <div class="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center text-white">
-      <i data-lucide="circle-dashed"></i>
+    <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center text-white transition-transform duration-300 ease-in-out group-hover:scale-110 shadow-lg shadow-green-200">
+      <i data-lucide="check-circle"></i>
     </div>
-    <p class="text-sm text-slate-400 font-semibold">Pending</p>
+    <p class="text-sm text-green-600 font-bold uppercase tracking-wider">Available</p>
   </div>
-  <p class="text-2xl font-extrabold" x-text="pending"></p>
+  <p class="text-2xl font-extrabold text-green-900" x-text="available"></p>
 </div>
 
-<!-- IN PROGRESS -->
-<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="inProgress">
-
+<!-- IN PROGRESS (Gray) -->
+<div @click="window.location.href='tickets.html?status=In Progress'" 
+     class="stat-card group bg-slate-100 rounded-2xl shadow-md p-6 cursor-pointer hover:bg-slate-200 transition border border-slate-200" data-key="inProgress">
   <div class="flex justify-between mb-4">
-    <div class="w-12 h-12 bg-gray-500 rounded-xl flex items-center justify-center text-white">
+    <div class="w-12 h-12 bg-slate-500 rounded-xl flex items-center justify-center text-white transition-transform duration-300 ease-in-out group-hover:scale-110 shadow-lg shadow-slate-300">
       <i data-lucide="hourglass"></i>
     </div>
-    <p class="text-sm text-slate-400 font-semibold">In Progress</p>
+    <p class="text-sm text-slate-600 font-bold uppercase tracking-wider">In Progress</p>
   </div>
-  <p class="text-2xl font-extrabold" x-text="inProgress"></p>
+  <p class="text-2xl font-extrabold text-slate-900" x-text="inProgress"></p>
 </div>
 
-<!-- RESOLVED -->
-<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="resolved">
+<!-- RESOLVED (Emerald) -->
+<div @click="window.location.href='tickets.html?status=Resolved'" 
+     class="stat-card group bg-emerald-50 rounded-2xl shadow-md p-6 cursor-pointer hover:bg-emerald-100 transition border border-emerald-100" data-key="resolved">
   <div class="flex justify-between mb-4">
-    <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center text-white">
-      <i data-lucide="circle-check"></i>
+    <div class="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center text-white transition-transform duration-300 ease-in-out group-hover:scale-110 shadow-lg shadow-emerald-200">
+      <i data-lucide="shield-check"></i>
     </div>
-    <p class="text-sm text-slate-400 font-semibold">Resolved</p>
+    <p class="text-sm text-emerald-700 font-bold uppercase tracking-wider">Resolved</p>
   </div>
-  <p class="text-2xl font-extrabold" x-text="resolved"></p>
+  <p class="text-2xl font-extrabold text-emerald-900" x-text="resolved"></p>
 </div>
 
-<!-- DISPOSED -->
-<div class="stat-card bg-white rounded-2xl shadow-lg p-6" data-key="disposed">
-
+<!-- DISPOSED (Rose/Red) -->
+<div @click="window.location.href='assets.html?status=Disposed'" 
+     class="stat-card group bg-rose-50 rounded-2xl shadow-md p-6 cursor-pointer hover:bg-rose-100 transition border border-rose-100" data-key="disposed">
   <div class="flex justify-between mb-4">
-    <div class="w-12 h-12 bg-rose-500 rounded-xl flex items-center justify-center text-white">
+    <div class="w-12 h-12 bg-rose-500 rounded-xl flex items-center justify-center text-white transition-transform duration-300 ease-in-out group-hover:scale-110 shadow-lg shadow-rose-200">
       <i data-lucide="trash-2"></i>
     </div>
-    <p class="text-sm text-slate-400 font-semibold">Disposed</p>
+    <p class="text-sm text-rose-600 font-bold uppercase tracking-wider">Disposed</p>
   </div>
-  <p class="text-2xl font-extrabold" x-text="disposed"></p>
+  <p class="text-2xl font-extrabold text-rose-900" x-text="disposed"></p>
 </div>
 
+
+
 </div>
+
+<!-- Chart Container -->
+<div x-data="dashboardChart" x-init="renderChart()">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
+            <div class="p-2 bg-emerald-500 rounded-lg shadow-lg shadow-emerald-200">
+                <i data-lucide="bar-chart-3" class="w-5 h-5 text-white"></i>
+            </div>
+            Asset Dashboard
+        </h3>
+    </div>
+
+    <!-- Charts -->
+    <div class="flex flex-col md:flex-row gap-6">
+       <!-- Left: Line Chart -->
+<div class="flex-1 bg-slate-800 p-6 rounded-3xl border border-slate-700 shadow-sm">
+    <h3 class="text-lg font-bold text-slate-100 mb-4">Asset Trends</h3>
+    <div class="relative h-64"> <!-- fixed height -->
+        <canvas id="lineChart"></canvas>
+    </div>
+</div>
+
+<!-- Right: Doughnut Chart -->
+<div class="w-full md:w-1/3 bg-slate-800 p-6 rounded-3xl border border-slate-700 shadow-sm">
+    <h3 class="text-lg font-bold text-slate-100 mb-4">Asset Status Distribution</h3>
+    <div class="relative h-64"> <!-- fixed height -->
+        <canvas id="doughnutChart"></canvas>
+    </div>
+</div>
+
+    </div>
+</div>
+<br>
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- RECENT ASSETS -->
-<h3 class="text-xl font-bold mb-4">Recent Assets</h3>
-<div class="flex gap-4 flex-wrap mb-10">
-  <template x-for="asset in recentAssets" :key="asset.id">
-    <div class="bg-white p-6 rounded-2xl shadow w-72">
-      <p class="font-bold" x-text="asset.name"></p>
-      <p class="text-sm text-slate-400">SN: <span x-text="asset.sn"></span></p>
-      <p class="text-sm text-slate-400">Assigned: <span x-text="asset.user_name"></span></p>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+  
+  <!-- LEFT: RECENT ASSETS (2/3 Width) -->
+  <div class="lg:col-span-2">
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="text-xl font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
+        <div class="p-2 bg-blue-500 rounded-lg shadow-lg shadow-blue-200">
+            <i data-lucide="package" class="w-5 h-5 text-white"></i>
+        </div>
+        Recent Assets
+      </h3>
+      <button @click="window.location.href='assets.html'" class="text-xs font-bold text-blue-600 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition uppercase tracking-wider">
+        View All
+      </button>
     </div>
-  </template>
+
+    <div class="overflow-hidden bg-white rounded-3xl border border-slate-200 shadow-sm">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-slate-50/80 border-b border-slate-200">
+            <tr>
+              <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Asset</th>
+              <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Serial</th>
+              <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <template x-for="asset in recentAssets" :key="asset.id">
+              <tr class="hover:bg-slate-50 transition-colors group cursor-pointer">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <!-- Icon Color based on the Card Colors you provided -->
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 shadow-sm"
+                         :class="{
+                            'bg-green-500 text-white': asset.status === 'Available',
+                            'bg-indigo-500 text-white': asset.status === 'Deployed',
+                            'bg-amber-500 text-white': asset.status === 'Maintenance',
+                            'bg-purple-500 text-white': asset.status === 'Replacement',
+                            'bg-rose-500 text-white': asset.status === 'Disposed',
+                            'bg-gray-500 text-white': asset.status === 'In Progress'
+                         }">
+                      <i data-lucide="monitor" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-700 text-sm" x-text="asset.name"></p>
+                        <p class="text-[10px] text-slate-400" x-text="asset.user_name"></p>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-xs text-slate-500 font-mono" x-text="asset.sn"></td>
+                <td class="px-6 py-4 text-center">
+                  <!-- Pill Color based on the Card Colors you provided -->
+                  <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wide border shadow-sm" 
+                        :class="{
+                          'bg-green-50 text-green-600 border-green-200': asset.status === 'Available',
+                          'bg-indigo-50 text-indigo-600 border-indigo-200': asset.status === 'Deployed',
+                          'bg-amber-50 text-amber-600 border-amber-200': asset.status === 'Maintenance',
+                          'bg-purple-50 text-purple-600 border-purple-200': asset.status === 'Replacement',
+                          'bg-rose-50 text-rose-600 border-rose-200': asset.status === 'Disposed',
+                          'bg-gray-50 text-gray-600 border-gray-200': asset.status === 'In Progress'
+                        }"
+                        x-text="asset.status">
+                  </span>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: RECENT USERS (1/3 Width) -->
+  <div class="lg:col-span-1">
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="text-xl font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
+        <div class="p-2 bg-indigo-500 rounded-lg shadow-lg shadow-indigo-200">
+            <i data-lucide="users" class="w-5 h-5 text-white"></i>
+        </div>
+        Recent Users
+      </h3>
+    </div>
+
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden text-sm">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-slate-50/80 border-b border-slate-200">
+          <tr>
+            <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">User</th>
+            <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Role</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          <template x-for="user in recentUsers" :key="user.id">
+            <tr class="hover:bg-slate-50 transition-colors group cursor-pointer">
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="relative">
+                    <div class="w-10 h-10 rounded-full bg-slate-100 border-2 border-white shadow-sm flex items-center justify-center text-slate-600 font-bold text-xs group-hover:bg-indigo-500 group-hover:text-white transition-all">
+                      <span x-text="user.username.charAt(0)"></span>
+                    </div>
+                    <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></div>
+                  </div>
+                  <p class="font-bold text-slate-700" x-text="user.username"></p>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-right">
+                <!-- Corrected Role Colors -->
+                <span class="px-2.5 py-1 rounded-md text-[10px] font-black border uppercase shadow-sm"
+                      :class="{
+                        'bg-blue-50 text-blue-700 border-blue-200': user.role === 'Admin',
+                        'bg-slate-50 text-slate-600 border-slate-200': user.role === 'User' || user.role === 'Staff',
+                        'bg-purple-50 text-purple-600 border-purple-200': user.role === 'Super Admin'
+                      }"
+                      x-text="user.role">
+                </span>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+      <div class="p-4 bg-slate-50/50 border-t border-slate-100 text-center">
+        <a href="accounts.html" class="text-xs font-bold text-slate-500 hover:text-indigo-600 transition tracking-wide uppercase">Manage All Users</a>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<!-- RECENT USERS -->
-<h3 class="text-xl font-bold mb-4">Recent Users</h3>
-<div class="flex gap-4 flex-wrap">
-  <template x-for="user in recentUsers" :key="user.id">
-    <div class="bg-white p-6 rounded-2xl shadow w-72">
-      <p class="font-bold" x-text="user.username"></p>
-      <p class="text-sm text-slate-400" x-text="user.role"></p>
-    </div>
-  </template>
+
 </div>
+
+
+
 
 </main>
 </div>
+<script src="chart.js">
+
+</script>
 
 <script src="index.js">
 
